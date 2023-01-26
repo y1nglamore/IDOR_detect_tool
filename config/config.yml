@@ -1,0 +1,21 @@
+# 对于哪些域名进行越权漏洞检测
+host:
+  - "localhost"
+  - ".*\\.gem-love\\.com"
+  - "l.y1ng.vip"
+
+cookie: "JSESSION=Y1ng.VIP"
+
+matchreplace: # URL PATH HEADER BODY
+  - {
+      location: "URL",
+      pattern: "_signature=2Cw00QAAAAA9GaIS4KF.M9gsNMAALwH",
+      replace: "_signature=2RlsxgAAAAA8LPoFKkjFZNkZbNAALrU",
+    }
+  - {
+      location: "HEADER",
+      pattern:  "987bc3e6-1234-1234-1234-63e9519d718b" ,
+      replace:  { name: "X-SessionId", value: "756f5b80-5678-5678-5678-d46f6e4ea891" },
+    } 
+
+
