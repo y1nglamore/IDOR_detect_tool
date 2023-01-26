@@ -1,0 +1,33 @@
+# 对于哪些域名进行越权漏洞检测，可以写正则表达式，正则re.compile()不通过的会被认为是纯字符串，不含端口
+host:
+  - "localhost"
+  - ".*\\.gem-love\\.com"
+  - "127.0.0.1"
+
+# port表示对上述域名的哪些端口, 写数字就表示精准匹配端口，写字符串表示端口的正则表达式，如果不想限制端口直接写 ".*" 即可(表示匹配任意)
+port:
+  - 80
+  - "1\\d{4}"
+  - ".*"
+
+# cookie直接全量替换，所以要写全，有多少个cookie字段写多少个。
+cookie: "JSESSION=Y1ng.VIP; x-csrf-token=123123123; signature=12346576788"
+
+# matchreplace会做替换
+  # pattern可以写正则表达式，如果不能成功执行正则re.compile()则会被认为是纯字符串，，replace则为替换后的字符串（而非正则表达式）
+  # location可以有以下几种选项
+    # URL 对URL做替换
+    # PATH 对PATH路径做替换
+    # HEADER 对请求头做替换，当替换HEADER时，replace为一个对象，name表示对应头部名，value是匹配的头部值的正则
+    # BODY 对POST传输的BODY部分做替换
+matchreplace: 
+  - {
+      location: "URL",
+      pattern: "_signature=2Cw00QAAAAA9GaIS4KF.M9gsNMAALwH",
+      replace: "_signature=2RlsxgAAAAA8LPoFKkjFZNkZbNAALrU",
+    }
+  - {
+      location: "HEADER",
+      pattern:  "Bareer .*$" ,
+      replace:  { name: "Authorization", value: "Bareer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c" },
+    } 

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>商城系统 - 订单列表</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <a class="navbar-brand" href="#">商城系统</a>
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/dashboard">商品列表</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="/orders">订单列表</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/coupons">优惠券</a>
+                </li>
+            </ul>
+            <a class="btn btn-danger" href="/logout">退出登录</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        <h1 class="mt-5">订单列表</h1>
+        <ul id="order-list" class="list-group mt-4"></ul>
+    </div>
+
+    <div id="order-detail-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="order-detail-modal-title" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="order-detail-modal-title">订单详情</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="关闭">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <ul id="order-detail-list" class="list-group"></ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            // 获取订单列表
+            $.ajax({
+                url: '/api/shop/order/list',
+                type: 'GET',
+                success: function(response) {
+                    var orderList = response;
+                    var orderListElement = $('#order-list');
+                    orderListElement.empty();
+
+                    for (var i = 0; i < orderList.length; i++) {
+                        var order = orderList[i];
+                        var listItem = '<li class="list-group-item d-flex justify-content-between align-items-center">' +
+                            '订单ID: ' + order.id +
+                            '<button class="btn btn-danger btn-sm ml-3 delete-order-btn" data-order-id="' + order.id + '">删除</button>' +
+                            '<button class="btn btn-primary btn-sm ml-3 order-detail-btn" data-order-id="' + order.id + '">详情</button>' +
+                            '</li>';
+                        orderListElement.append(listItem);
+                    }
+                },
+                error: function(error) {
+                    console.log(error);
+                }
+            });
+
+            // 显示订单详情
+            $(document).on('click', '.order-detail-btn', function() {
+                var orderId = $(this).data('order-id');
+
+                $.ajax({
+                    url: '/api/shop/order/detail?order_id=' + orderId,
+                    type: 'GET',
+                    xhrFields: {withCredentials: true},
+                    success: function(response) {
+                        if (response.code !== 200) {
+                            alert(response.message);
+                            return;
+                        }
+                        var orderDetailList = $('#order-detail-list');
+                        orderDetailList.empty();
+
+                        for (var key in response.data) {
+                            var listItem = '<li class="list-group-item">' + key + ': ' + response.data[key] + '</li>';
+                            orderDetailList.append(listItem);
+                        }
+
+                        $('#order-detail-modal').modal('show');
+                    },
+                    error: function(error) {
+                        console.log(error);
+                    }
+                });
+            });
+
+            // 删除订单
+            $(document).on('click', '.delete-order-btn', function() {
+                var orderId = $(this).data('order-id');
+
+                $.ajax({
+                    url: '/api/shop/order/delete',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ 'order_id': orderId }),
+                    success: function(response) {
+                        alert(response.message)
+                        location.reload();
+                    },
+                    error: function(error) {
+                        console.log(error);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

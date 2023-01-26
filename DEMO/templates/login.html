@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>商城系统 - 登录</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1 class="mt-5">登录</h1>
+        <form id="login-form" class="mt-4">
+            <div class="form-group">
+                <label for="username">用户名</label>
+                <input type="text" class="form-control" id="username" placeholder="请输入用户名">
+            </div>
+            <div class="form-group">
+                <label for="password">密码</label>
+                <input type="password" class="form-control" id="password" placeholder="请输入密码">
+            </div>
+            <button type="submit" class="btn btn-primary">登录</button> 
+            <p id="message" class="mt-3"></p>
+        </form>
+        <button class="btn btn-primary" onclick="window.location.href='/register'">去注册</button>
+        
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $('#login-form').submit(function(event) {
+            event.preventDefault();
+
+            var username = $('#username').val();
+            var password = $('#password').val();
+
+            // 判断用户名和密码是否为空
+            if (!username || !password) {
+                $('#message').text('用户名和密码不能为空');
+                return;
+            }
+
+            $.ajax({
+                url: '/api/login',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ 'username': username, 'password': password }),
+                success: function(response) {
+                    $('#message').text(response.message);
+                    if (response.message === '登录成功') {
+                        alert('登录成功');
+                        window.location.href = '/dashboard';
+                    }
+                },
+                error: function(error) {
+                    $('#message').text(error);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

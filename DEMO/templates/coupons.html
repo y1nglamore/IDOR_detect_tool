@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>商城系统 - 优惠券</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <a class="navbar-brand" href="#">商城系统</a>
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/dashboard">商品列表</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/orders">订单列表</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="/coupons">优惠券</a>
+                </li>
+            </ul>
+            <a class="btn btn-danger" href="/logout">退出登录</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        <h1 class="mt-5">优惠券信息</h1>
+        <ul id="coupon-list" class="list-group mt-4"></ul>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // 获取优惠券列表
+            $.ajax({
+                url: '/api/shop/coupon/list',
+                type: 'GET',
+                xhrFields: {withCredentials: true},
+                success: function(response) {
+                    var couponList = response;
+                    console.log(couponList);
+                    var couponListElement = $('#coupon-list');
+                    
+                    couponListElement.empty();
+
+                    for (var i = 0; i < couponList.length; i++) {
+                        var coupon = couponList[i];
+                        var listItem = '<li class="list-group-item">' +
+                            '优惠券ID: ' + coupon.id +
+                            ' - 优惠码: ' + coupon.code +
+                            ' - 金额: ' + coupon.amount +
+                            ' - 可重复使用: ' + coupon.reusable +
+                            '</li>';
+                        couponListElement.append(listItem);
+                    }
+                },
+                error: function(error) {
+                    console.log(error);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,105 @@
+<!-- checkout.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>商城系统 - 确认订单</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <a class="navbar-brand" href="#">商城系统</a>
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/dashboard">商品列表</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/orders">订单列表</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/coupons">优惠券</a>
+                </li>
+            </ul>
+            <a class="btn btn-danger" href="/logout">退出登录</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        <h1 class="mt-5">确认订单</h1>
+        <div class="row mt-4">
+            <div class="col-lg-6">
+                <h3>商品信息</h3>
+                <p>商品ID: <span id="product-id"></span></p>
+                <p>商品名称: <span id="product-name"></span></p>
+                <p>商品价格: <span id="product-price"></span></p>
+                <p id="coupon_id_used" class="mt-3"></p>
+            </div>
+            <div class="col-lg-6">
+                <h3>优惠券信息</h3>
+                <div class="form-group">
+                    <label for="coupon-code">如需使用优惠券购买，请在此处应用优惠券</label>
+                    <input type="text" class="form-control" id="coupon-code" placeholder="请输入优惠码">
+                </div>
+                <button id="apply-coupon-btn" class="btn btn-primary">应用优惠券</button>
+            </div>
+        </div>
+        <div class="mt-4">
+            <button id="confirm-order-btn" class="btn btn-success">确认订单</button>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // 从查询参数获取商品ID
+            var productId = new URLSearchParams(window.location.search).get('product_id');
+
+            // 获取商品信息
+            $.ajax({
+                url: '/api/shop/product/detail?product_id=' + productId,
+                type: 'GET',
+                success: function(response) {
+                    $('#product-id').text(response.id);
+                    $('#product-name').text(response.name);
+                    $('#product-price').text(response.price);
+                },
+                error: function(error) {
+                    console.log(error);
+                }
+            });
+
+            // 应用优惠券
+            $('#apply-coupon-btn').click(function() {
+                // 判断优惠券是否为空
+                if (!$('#coupon-code').val()) {
+                    alert('优惠码不能为空');
+                    return;
+                }
+                $('#coupon_id_used').text("应用优惠券: " + $('#coupon-code').val() + " 成功");
+            });
+
+            // 确认订单
+            $('#confirm-order-btn').click(function() {
+                var couponId = $('#coupon-code').val();
+
+                // 发送确认订单请求
+                $.ajax({
+                    url: '/api/shop/product/buy',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ 'product_id': productId, 'coupon_code': couponId }),
+                    success: function(response) {
+                        alert(response.message)
+                        if (response.message.indexOf('购买成功') > -1)
+                            window.location.href = '/orders';
+                        else window.location.href = '/dashboard';
+                    },
+                    error: function(error) {
+                        console.log(error);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>商城系统 - 商品列表</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <a class="navbar-brand" href="#">商城系统</a>
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="/dashboard">商品列表</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/orders">订单列表</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/coupons">优惠券</a>
+                </li>
+            </ul>
+            <a class="btn btn-danger" href="/logout">退出登录</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        <h1 class="mt-5">商品列表</h1>
+        <div class="row mt-4">
+            <div class="col-lg-6">
+                <h3>商品列表</h3>
+                <ul id="product-list" class="list-group"></ul>
+            </div>
+            <div class="col-lg-6">
+                <h3>当前余额</h3>
+                <p id="user-balance"></p>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // 获取商品列表
+            $.ajax({
+                url: '/api/shop/product/list',
+                type: 'GET',
+                xhrFields: {withCredentials: true},
+                success: function(response) {
+                    var productList = response;
+                    var productListElement = $('#product-list');
+                    productListElement.empty();
+
+                    for (var i = 0; i < productList.length; i++) {
+                        var product = productList[i];
+                        var listItem = '<li class="list-group-item d-flex justify-content-between align-items-center">' +
+                            product.name + ' - 价格: ' + product.price +
+                            '<a class="btn btn-primary btn-sm ml-3" href="/checkout?product_id=' + product.id + '">购买</a>' +
+                            '</li>';
+                        productListElement.append(listItem);
+                    }
+                },
+                error: function(error) {
+                    console.log(error);
+                }
+            });
+            
+            // 获取当前用户余额
+            $.ajax({
+                url: '/api/user/balance',
+                type: 'GET',
+                success: function(response) {
+                    $('#user-balance').text('余额：' + response.balance);
+                },
+                error: function(error) {
+                    console.log(error);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
