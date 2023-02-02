@@ -1,3 +1,4 @@
+import traceback
 import re
 import sys 
 import os
@@ -89,6 +90,7 @@ class Replay:
         try:
             return hack_request(raw, url=flow.request.url)
         except Exception as e:
-            print(f"hack_request error: {e}", e.with_traceback)
+            print(f"hack_request error: {e}")
+            traceback.print_exc()
             return None 
 

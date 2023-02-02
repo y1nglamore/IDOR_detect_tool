@@ -10,6 +10,8 @@ from lib.requestutil import get_api
 class Listener:
     def __init__(self) -> None:
         self.config = Config().get_config()
+        if not Config().check_config():
+            exit(0)
 
     def __is_static(self, flow: http.HTTPFlow) -> bool:
         # 判断是否在请求静态资源
@@ -24,6 +26,7 @@ class Listener:
         return get_api(flow) in content
 
     def request(self, flow: http.HTTPFlow) -> None:
+        print(self.config)
         for host_pattern in self.config['host']:
             if re.search(host_pattern, flow.request.pretty_host) and not self.__is_static(flow) and not self.__is_vul_exists(flow):
                 my_thread(Replay, flow)
