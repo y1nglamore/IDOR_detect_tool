@@ -20,7 +20,7 @@ class Config(object):
             'cookie' : '',
             'mrs' : []
         }
-        with open(path_join('config/config.yml'), 'r') as f:
+        with open(path_join('config/config.yml'), 'r', encoding="utf-8") as f:
             config = yaml.load(f, Loader=yaml.SafeLoader)
         try:
             for h in config['host']:
