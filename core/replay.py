@@ -65,7 +65,7 @@ class Replay:
         for k, v in self.__parse_cookie(new_cookie).items():
             flow.request.cookies[k] = v
     
-    def __match_replace(self, flow: http.HTTPFlow, mrs: list[dict]) -> None:
+    def __match_replace(self, flow: http.HTTPFlow, mrs: list) -> None:
         # Match and replace here.
         for mr in mrs:
             pattern = re.compile(mr['pattern'])
