@@ -191,7 +191,10 @@ def buy_product():
     # 获取用户余额
     username = session.get('username')
     cursor.execute('SELECT balance FROM user WHERE username = ?', (username,))
-    user_balance = cursor.fetchone()[0]
+    if result := cursor.fetchone():
+        balance = result[0]
+    else:
+        balance = 0.00
 
     # 获取优惠券额度
     coupon_amount = 0.00
