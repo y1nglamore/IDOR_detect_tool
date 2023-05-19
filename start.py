@@ -6,7 +6,7 @@ warnings.filterwarnings("ignore")
 if __name__ == '__main__':
     '''
     -p 8889 监听8889端口
-    --mode regular 代理模式，regular表示HTTP代理，可以廁socks5等其他模式
+    --mode regular 代理模式，regular表示HTTP代理，可以改为socks5等其他模式
     -q 安静模式 不输出mitmproxy的日志
     '''
     port = 8889

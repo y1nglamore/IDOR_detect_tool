@@ -120,8 +120,6 @@
 						tr.hide();
 					}
 				});
-
-
 			});
 
 			$(".extra-info pre code").each(function () {
@@ -137,7 +135,6 @@
 			var lines = [];
 			var line = '';
 			var words = content.split(' ');
-
 			for (var i = 0; i < words.length; i++) {
 				line += words[i] + ' ';
 				if (line.length >= maxLength) {
@@ -145,16 +142,11 @@
 					line = '';
 				}
 			}
-
 			if (line !== '') {
 				lines.push(line);
 			}
-
 			formattedContent = lines.join('<br>');
-
 			return formattedContent;
 		}
-
 	</script>
-
 </body>

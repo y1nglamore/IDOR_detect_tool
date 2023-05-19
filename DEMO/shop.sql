@@ -5,6 +5,8 @@ CREATE TABLE user (
     password TEXT NOT NULL -- 密码
 );
 
+ALTER TABLE user ADD COLUMN balance FLOAT DEFAULT 30.00;
+
 -- 订单表
 CREATE TABLE `order` (
     id INTEGER PRIMARY KEY AUTOINCREMENT, -- 订单ID（自增）
@@ -32,6 +34,7 @@ CREATE TABLE product (
     name TEXT, -- 商品名称
     price FLOAT -- 价格
 );
+
 
 
 INSERT INTO user (id, username, password) VALUES (1, 'admin', 'admin@123');

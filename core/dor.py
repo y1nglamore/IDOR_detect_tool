@@ -87,11 +87,10 @@ class Dor:
     
     def __similarity(self, str1, str2) -> float:
         # sourcery skip: inline-immediately-returned-variable
-        # Levenshtein距离是一种衡量两个字符串之间差异的度量标准，表示通过插入、删除和替换字符所需的最少操作数。
-        # 使用Python的python-Levenshtein库来计算Levenshtein距离，并将其转换为相似度百分比。请确保在运行代码之前安装该库。
         distance = Levenshtein.distance(str1, str2)
         max_length = max(len(str1), len(str2))
         similarity = (max_length - distance) / max_length 
         return similarity
         # return difflib.SequenceMatcher(None, str1, str2).quick_ratio()
+        
         

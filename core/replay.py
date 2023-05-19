@@ -1,7 +1,8 @@
+import contextlib
 import json
 import traceback
 import re
-import sys 
+import sys
 import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -14,7 +15,7 @@ from bs4 import BeautifulSoup
 from config.config import Config
 from lib.requestutil import hack_request, get_raw
 from lib.record import record
-from lib.requestutil import get_api 
+from lib.requestutil import get_api
 from .dor import Dor
 from .output import Output
 
@@ -60,20 +61,14 @@ class Replay:
         except Exception:
             return False
 
-    def __modify_flow(self) -> None:
-        # Modify the flow here.
-        config = Config().get_config()
-        self.__modify_cookie(self.modify_flow, config['cookie'])
-        self.__match_replace(self.modify_flow, config['mrs'])
+
 
     def __parse_cookie(self, cookie: str) -> dict:
         cookie_dict = {}
         for c in cookie.split(';'):
-            try:
+            with contextlib.suppress(Exception):
                 k, v = tuple(c.split('=', 1))
                 cookie_dict[k] = v
-            except Exception:
-                pass
         return cookie_dict
     
     def __modify_cookie(self, flow: http.HTTPFlow, new_cookie) -> None:
@@ -90,6 +85,12 @@ class Replay:
             return re.sub(ptn, replace, origin)
         except Exception:
             return origin.replace(pattern, replace)
+        
+    def __modify_flow(self) -> None:
+        # Modify the flow here.
+        config = Config().get_config()
+        self.__modify_cookie(self.modify_flow, config['cookie'])
+        self.__match_replace(self.modify_flow, config['mrs'])
     
     def __match_replace(self, flow: http.HTTPFlow, mrs: list) -> None:
         # Match and replace here.
@@ -110,14 +111,6 @@ class Replay:
             else:
                 raise exceptions.OptionsError(f"Invalid location: {mr['location']}")
                 
-    # def replay(self, flow: http.HTTPFlow) -> str:
-    #     raw = get_raw(flow, pretty_host = self.pretty_host)
-    #     try:
-    #         return hack_request(raw, url=flow.request.url)
-    #     except Exception as e:
-    #         print(f"hack_request error: {e}")
-    #         traceback.print_exc()
-    #         return None 
     @staticmethod
     def replay(*args) -> str:
         if len(args) == 1:

@@ -1,15 +1,6 @@
 import mitmproxy.http as http 
-from urllib.parse import urlparse
-
 import html
 from mitmproxy.net.http.http1.assemble import assemble_request
-
-
-# def hack_request(raw, real_host = None, url=None):
-#     import HackRequests
-#     hack = HackRequests.hackRequests()
-#     hh = hack.httpraw(raw, real_host=real_host) if real_host else hack.httpraw(raw)
-#     return hh.text()
 
 def hack_request(raw, url=None):
     import requests_raw
@@ -30,3 +21,10 @@ def get_raw(flow: http.HTTPFlow, pretty_host = None) -> str:
 
 def resp_htmlencode(resp: str) -> str:
     return html.escape(resp)
+
+
+# def hack_request(raw, real_host = None, url=None):
+#     import HackRequests
+#     hack = HackRequests.hackRequests()
+#     hh = hack.httpraw(raw, real_host=real_host) if real_host else hack.httpraw(raw)
+#     return hh.text()

@@ -72,3 +72,7 @@ python3 start.py
 ## 测试用例
 
 DEMO中给出了一个测试用代码，其中存在两个水平越权漏洞。
+
+## 架构图
+
+![002915_i19Ly5](http://cdn2.pic.y1ng.vip/uPic/2023/05/19/002915_i19Ly5.png)

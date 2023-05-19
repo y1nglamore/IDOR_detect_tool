@@ -13,7 +13,7 @@ app.config['SECRET_KEY'] = 'cd0ed627-6057-dce6-cd73-79860777655e'
 def init_db():
     with app.app_context():
         db = get_db()
-        with app.open_resource('schema.sql', mode='r') as f:
+        with app.open_resource('shop.sql', mode='r') as f:
             db.cursor().executescript(f.read())
         db.commit()
 
@@ -93,7 +93,6 @@ def register():
     if user := cursor.fetchone():
         return jsonify({'message': '用户名已存在', 'timestamp': time.time() * 10000, 'code': 500, 'status': 'error'})
 
-
     try:
         cursor = db.cursor()
         cursor.execute('INSERT INTO user (username, password) VALUES (?, ?)', (username, password))
@@ -157,9 +156,7 @@ def product_detail():
 
     # 查询商品信息
     cursor.execute('SELECT id, name, price FROM product WHERE id = ?', (product_id,))
-    product = cursor.fetchone()
-
-    if product:
+    if product := cursor.fetchone():
         product_detail = {
             'id': product[0],
             'name': product[1],

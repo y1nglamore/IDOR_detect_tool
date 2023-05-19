@@ -45,22 +45,6 @@ class Listener:
                 if host == pattern:
                     return True
         return False
-    
-    def __response(self, flow: http.HTTPFlow) -> None:
-        # 获取响应信息
-        response = flow.response
-        print("响应状态码:", response.status_code)
-        print("响应头部:", response.headers)
-        print("响应正文:", response.text)
-
-    def __request(self, flow: http.HTTPFlow) -> None:
-        # 获取请求信息
-        request = flow.request
-        print("请求URL:", request.url)
-        print("请求方法:", request.method)
-        print("请求头部:", request.headers)
-        print("请求正文:", request.text)
-
 
     def request(self, flow: http.HTTPFlow) -> None:
         # self.__request(flow)
@@ -72,7 +56,7 @@ class Listener:
         if self.__check_host(flow) and self.__check_port(flow) and not self.__is_static(flow) and not self.__is_vul_exists(flow):
             my_thread(Replay, flow)
         else:
-            a = 1
+            a = 1 # 目的是让响应函数不为空
 
 addons = [
     Listener()
